@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.showerTrackBar = new System.Windows.Forms.TrackBar();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -54,6 +55,10 @@
             this.startSimulationButton = new System.Windows.Forms.Button();
             this.fastTimeButton = new System.Windows.Forms.Button();
             this.stateControlCheckBox = new System.Windows.Forms.CheckBox();
+            this.timer = new System.Windows.Forms.Timer(this.components);
+            this.heatControlCheckBox = new System.Windows.Forms.CheckBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.energyConsumptionLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.showerTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.showerTempTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sinkTempTrackBar)).BeginInit();
@@ -68,6 +73,7 @@
             this.showerTrackBar.Name = "showerTrackBar";
             this.showerTrackBar.Size = new System.Drawing.Size(104, 45);
             this.showerTrackBar.TabIndex = 0;
+            this.showerTrackBar.ValueChanged += new System.EventHandler(this.showerTrackBar_ValueChanged);
             // 
             // label1
             // 
@@ -96,6 +102,7 @@
             this.showerTempTrackBar.Name = "showerTempTrackBar";
             this.showerTempTrackBar.Size = new System.Drawing.Size(104, 45);
             this.showerTempTrackBar.TabIndex = 3;
+            this.showerTempTrackBar.ValueChanged += new System.EventHandler(this.showerTempTrackBar_ValueChanged);
             // 
             // label3
             // 
@@ -124,6 +131,7 @@
             this.sinkTempTrackBar.Name = "sinkTempTrackBar";
             this.sinkTempTrackBar.Size = new System.Drawing.Size(104, 45);
             this.sinkTempTrackBar.TabIndex = 8;
+            this.sinkTempTrackBar.ValueChanged += new System.EventHandler(this.sinkTempTrackBar_ValueChanged);
             // 
             // label5
             // 
@@ -148,10 +156,11 @@
             // sinkTrackBar
             // 
             this.sinkTrackBar.Location = new System.Drawing.Point(627, 237);
-            this.sinkTrackBar.Maximum = 30;
+            this.sinkTrackBar.Maximum = 15;
             this.sinkTrackBar.Name = "sinkTrackBar";
             this.sinkTrackBar.Size = new System.Drawing.Size(104, 45);
             this.sinkTrackBar.TabIndex = 5;
+            this.sinkTrackBar.ValueChanged += new System.EventHandler(this.sinkTrackBar_ValueChanged);
             // 
             // boilerTempLabel
             // 
@@ -227,7 +236,7 @@
             // 
             this.label10.AutoSize = true;
             this.label10.BackColor = System.Drawing.SystemColors.Control;
-            this.label10.Location = new System.Drawing.Point(28, 206);
+            this.label10.Location = new System.Drawing.Point(28, 257);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(66, 15);
             this.label10.TabIndex = 18;
@@ -237,7 +246,7 @@
             // 
             this.spiralStateLabel.AutoSize = true;
             this.spiralStateLabel.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.spiralStateLabel.Location = new System.Drawing.Point(25, 222);
+            this.spiralStateLabel.Location = new System.Drawing.Point(25, 273);
             this.spiralStateLabel.Name = "spiralStateLabel";
             this.spiralStateLabel.Size = new System.Drawing.Size(98, 30);
             this.spiralStateLabel.TabIndex = 17;
@@ -247,7 +256,7 @@
             // 
             this.label11.AutoSize = true;
             this.label11.BackColor = System.Drawing.SystemColors.Control;
-            this.label11.Location = new System.Drawing.Point(28, 276);
+            this.label11.Location = new System.Drawing.Point(28, 327);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(56, 15);
             this.label11.TabIndex = 20;
@@ -257,7 +266,7 @@
             // 
             this.controlStateLabel.AutoSize = true;
             this.controlStateLabel.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.controlStateLabel.Location = new System.Drawing.Point(25, 292);
+            this.controlStateLabel.Location = new System.Drawing.Point(25, 343);
             this.controlStateLabel.Name = "controlStateLabel";
             this.controlStateLabel.Size = new System.Drawing.Size(142, 30);
             this.controlStateLabel.TabIndex = 19;
@@ -278,7 +287,7 @@
             this.simulationTimeLabel.AutoSize = true;
             this.simulationTimeLabel.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.simulationTimeLabel.ForeColor = System.Drawing.Color.Red;
-            this.simulationTimeLabel.Location = new System.Drawing.Point(351, 33);
+            this.simulationTimeLabel.Location = new System.Drawing.Point(328, 34);
             this.simulationTimeLabel.Name = "simulationTimeLabel";
             this.simulationTimeLabel.Size = new System.Drawing.Size(71, 30);
             this.simulationTimeLabel.TabIndex = 21;
@@ -293,31 +302,71 @@
             this.startSimulationButton.TabIndex = 23;
             this.startSimulationButton.Text = "Zapnout simulaci";
             this.startSimulationButton.UseVisualStyleBackColor = true;
+            this.startSimulationButton.Click += new System.EventHandler(this.startSimulationButton_Click);
             // 
             // fastTimeButton
             // 
-            this.fastTimeButton.Location = new System.Drawing.Point(25, 436);
+            this.fastTimeButton.Location = new System.Drawing.Point(25, 487);
             this.fastTimeButton.Name = "fastTimeButton";
             this.fastTimeButton.Size = new System.Drawing.Size(126, 23);
             this.fastTimeButton.TabIndex = 24;
             this.fastTimeButton.Text = "10x zrychlit";
             this.fastTimeButton.UseVisualStyleBackColor = true;
+            this.fastTimeButton.Click += new System.EventHandler(this.fastTimeButton_Click);
             // 
             // stateControlCheckBox
             // 
             this.stateControlCheckBox.AutoSize = true;
-            this.stateControlCheckBox.Location = new System.Drawing.Point(25, 335);
+            this.stateControlCheckBox.Location = new System.Drawing.Point(30, 390);
             this.stateControlCheckBox.Name = "stateControlCheckBox";
             this.stateControlCheckBox.Size = new System.Drawing.Size(107, 19);
             this.stateControlCheckBox.TabIndex = 25;
             this.stateControlCheckBox.Text = "Manualni řízení";
             this.stateControlCheckBox.UseVisualStyleBackColor = true;
+            this.stateControlCheckBox.CheckedChanged += new System.EventHandler(this.stateControlCheckBox_CheckedChanged);
+            // 
+            // timer
+            // 
+            this.timer.Tick += new System.EventHandler(this.timer_Tick);
+            // 
+            // heatControlCheckBox
+            // 
+            this.heatControlCheckBox.AutoSize = true;
+            this.heatControlCheckBox.Location = new System.Drawing.Point(30, 427);
+            this.heatControlCheckBox.Name = "heatControlCheckBox";
+            this.heatControlCheckBox.Size = new System.Drawing.Size(104, 19);
+            this.heatControlCheckBox.TabIndex = 26;
+            this.heatControlCheckBox.Text = "Zapnout ohřev";
+            this.heatControlCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.BackColor = System.Drawing.SystemColors.Control;
+            this.label13.Location = new System.Drawing.Point(28, 194);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(122, 15);
+            this.label13.TabIndex = 27;
+            this.label13.Text = "Spotrebovana energie";
+            // 
+            // energyConsumptionLabel
+            // 
+            this.energyConsumptionLabel.AutoSize = true;
+            this.energyConsumptionLabel.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.energyConsumptionLabel.Location = new System.Drawing.Point(25, 209);
+            this.energyConsumptionLabel.Name = "energyConsumptionLabel";
+            this.energyConsumptionLabel.Size = new System.Drawing.Size(74, 30);
+            this.energyConsumptionLabel.TabIndex = 28;
+            this.energyConsumptionLabel.Text = "20Wh";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 485);
+            this.ClientSize = new System.Drawing.Size(800, 540);
+            this.Controls.Add(this.energyConsumptionLabel);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.heatControlCheckBox);
             this.Controls.Add(this.stateControlCheckBox);
             this.Controls.Add(this.fastTimeButton);
             this.Controls.Add(this.startSimulationButton);
@@ -384,5 +433,9 @@
         private System.Windows.Forms.Button startSimulationButton;
         private System.Windows.Forms.Button fastTimeButton;
         private System.Windows.Forms.CheckBox stateControlCheckBox;
+        private System.Windows.Forms.Timer timer;
+        private System.Windows.Forms.CheckBox heatControlCheckBox;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label energyConsumptionLabel;
     }
 }
