@@ -18,7 +18,7 @@ namespace Boyler.Models
         public double VolumeLiters { get; }
         public Boiler()
         {
-            CurrentTemperature = 10;
+            CurrentTemperature = 50;
             HeatingPower = 4000;
             VolumeLiters = 125 * Math.PI;
             WaterFlowPerSecond = 0;
