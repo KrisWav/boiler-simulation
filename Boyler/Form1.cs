@@ -40,7 +40,7 @@ namespace Boyler
             waterFlowLabel.Text = $"{Math.Round(Simulation.Boiler.WaterFlowPerMinute, 1)}l/min";
             waterConsumptionLabel.Text = $"{Math.Round(Simulation.ConsumedWater, 1)}l";
             simulationTimeLabel.Text = Simulation.Time.ToString(@"hh\:mm\:ss");
-            energyConsumptionLabel.Text = $"{Math.Round(Simulation.EnergyConsumption, 1)}Wh";
+            energyConsumptionLabel.Text = $"{Math.Round(Simulation.EnergyConsumption/1000, 2)}kWh";
             boilerTempLabel.Text = $"{Math.Round(Simulation.Boiler.CurrentTemperature, 2)}°C";
 
 

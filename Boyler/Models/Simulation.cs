@@ -22,7 +22,7 @@ namespace Boyler.Models
         
         public Simulation()
         {
-            WaterHeatCapacity = 4180/3600;
+            WaterHeatCapacity = (double)((double)4180/(double)3600);
             TuvWaterTemperature = 10;
             Boiler = new Boiler();
             WaterAppliance = new WaterAppliance();
@@ -57,7 +57,6 @@ namespace Boyler.Models
             AddTime(interval * TimeMultiplier);
             CalculateEnergyConsumption(interval * TimeMultiplier);
             CalculateHeating(interval * TimeMultiplier);
-            Boiler.CurrentTemperature = CalculateCalometricTemp();
         }
         public void CalculateHeating(int time)
         {
@@ -65,13 +64,13 @@ namespace Boyler.Models
             if (Boiler.Heating)
             {
                 Boiler.LastTemperature = Boiler.CurrentTemperature;
-                Boiler.CurrentTemperature = ((Boiler.HeatingPower*timeSpan.TotalHours)/(Boiler.VolumeLiters*WaterHeatCapacity)) + Boiler.LastTemperature;
-                Boiler.CurrentTemperature = CalculateCalometricTemp() + CalculateHeatLoss(time);
+                Boiler.CurrentTemperature = ((Boiler.HeatingPower*timeSpan.TotalHours)/(Boiler.VolumeLiters*WaterHeatCapacity)) + CalculateCalometricTemp() + CalculateHeatLoss(time);
             }
             else
             {
                 Boiler.LastTemperature = Boiler.CurrentTemperature;
-                Boiler.CurrentTemperature = CalculateHeatLoss(time) + Boiler.CurrentTemperature;
+                Boiler.CurrentTemperature = CalculateHeatLoss(time) + CalculateCalometricTemp();
+                
             }
         }
         public double CalculateCalometricTemp()
