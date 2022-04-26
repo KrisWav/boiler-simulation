@@ -66,7 +66,7 @@ namespace Boyler.Models
             {
                 Boiler.LastTemperature = Boiler.CurrentTemperature;
                 Boiler.CurrentTemperature = ((Boiler.HeatingPower*timeSpan.TotalHours)/(Boiler.VolumeLiters*WaterHeatCapacity)) + Boiler.LastTemperature;
-                Boiler.CurrentTemperature = CalculateCalometricTemp() + CalculateHeatLoss(time) + CalculateHeatLoss(time);
+                Boiler.CurrentTemperature = CalculateCalometricTemp() + CalculateHeatLoss(time);
             }
             else
             {
