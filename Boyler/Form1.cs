@@ -14,12 +14,11 @@ namespace Boyler
     public partial class Form1 : Form
     {
         public Simulation Simulation { get; set; }
-        private int TimeMultiplier = 1;
         public Form1()
         {
             InitializeComponent();
             Simulation = new Simulation();
-            timuMultiplierComboBox.SelectedIndex = 0;
+            timeMultiplierTrackBar.Value = 1;
         }
 
         private void showerTrackBar_ValueChanged(object sender, EventArgs e)
@@ -29,15 +28,20 @@ namespace Boyler
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            Simulation.Boiler.SetWaterFlow(Simulation.WaterAppliance);
-            waterFlowLabel.Text = $"{Math.Round(Simulation.Boiler.WaterFlowPerMinute, 1)}l/min";
-            Simulation.CalculateConsumedWater(timer.Interval * TimeMultiplier);
-            waterConsumptionLabel.Text = $"{Math.Round(Simulation.ConsumedWater, 1)}l";
-            Simulation.AddTime(timer.Interval * TimeMultiplier);
-            simulationTimeLabel.Text = Simulation.Time.ToString();
+            Simulation.CalculateSimulationParameters(timer.Interval);
 
-            Simulation.CalculateEnergyConsumption(timer.Interval * TimeMultiplier);
+            if (Simulation.PowerOff)
+            {
+                heatControlCheckBox.Enabled = false;
+                heatControlCheckBox.Checked = false;
+            }
+            else heatControlCheckBox.Enabled = true;
+
+            waterFlowLabel.Text = $"{Math.Round(Simulation.Boiler.WaterFlowPerMinute, 1)}l/min";
+            waterConsumptionLabel.Text = $"{Math.Round(Simulation.ConsumedWater, 1)}l";
+            simulationTimeLabel.Text = Simulation.Time.ToString(@"hh\:mm\:ss");
             energyConsumptionLabel.Text = $"{Math.Round(Simulation.EnergyConsumption, 1)}Wh";
+            boilerTempLabel.Text = $"{Math.Round(Simulation.Boiler.CurrentTemperature, 2)}°C";
 
 
             if (Simulation.Boiler.Heating)
@@ -50,16 +54,6 @@ namespace Boyler
                 controlStateLabel.Text = "Automaticke";
             }
             else controlStateLabel.Text = "Manualni";
-
-            if (Simulation.AutomaticControl)
-            {
-                Simulation.AutomaticRun();
-            }
-            else
-            {
-                Simulation.CalculateHeating(timer.Interval * TimeMultiplier);
-                boilerTempLabel.Text = $"{Math.Round(Simulation.Boiler.CurrentTemperature, 2)} Celsius";
-            }
         }
 
         private void showerTempTrackBar_ValueChanged(object sender, EventArgs e)
@@ -87,7 +81,6 @@ namespace Boyler
             else
             {
                 timer.Start();
-                Simulation.AutomaticControl = !stateControlCheckBox.Checked;
                 startSimulationButton.Text = "Zastavit simulaci";
             }
             
@@ -108,12 +101,6 @@ namespace Boyler
             }
         }
 
-        private void fastTimeButton_Click(object sender, EventArgs e)
-        {
-            TimeMultiplier = 10;
-            Simulation.TimeMultiplier = 10;
-        }
-
         private void heatControlCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             Simulation.Boiler.Heating = heatControlCheckBox.Checked;
@@ -125,10 +112,10 @@ namespace Boyler
 
         }
 
-        private void timuMultiplierComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void timeMultiplierTrackBar_Scroll(object sender, EventArgs e)
         {
-            Simulation.TimeMultiplier = int.Parse(timuMultiplierComboBox.SelectedItem.ToString());
-            TimeMultiplier = int.Parse(timuMultiplierComboBox.SelectedItem.ToString());
+            Simulation.TimeMultiplier = timeMultiplierTrackBar.Value;
+            timeMultiplierLabel.Text = $"{timeMultiplierTrackBar.Value}x";
         }
     }
 }

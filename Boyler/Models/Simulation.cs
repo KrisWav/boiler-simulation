@@ -15,9 +15,11 @@ namespace Boyler.Models
         public TimeSpan Time { get; set; }
         public double WaterHeatCapacity { get; }
         public double EnergyConsumption { get; set; }
-        public double TimeMultiplier { get; set; }
+        public int TimeMultiplier { get; set; }
         public double ConsumedWater { get; set; }
         public double WaterHeatLossPower { get; set; }
+        public bool PowerOff { get; set; }
+        
         public Simulation()
         {
             WaterHeatCapacity = 4180/3600;
@@ -28,6 +30,7 @@ namespace Boyler.Models
             TimeMultiplier = 1;
             WaterHeatLossPower = 100;
             ConsumedWater = 0;
+            AutomaticControl = true;
         }
         public void AddTime(int ms)
         {
@@ -37,6 +40,25 @@ namespace Boyler.Models
         {
             ConsumedWater+=Boiler.WaterFlowPerSecond / 1000 * ms;
         }
+        public void CalculateSimulationParameters(int interval)
+        {
+            CheckBoilerOverheat();
+            if (AutomaticControl == true)
+            {
+                AutomaticRun();
+            }
+            if(PowerOff == true)
+            {
+                Boiler.Heating = false;
+            }
+
+            Boiler.SetWaterFlow(WaterAppliance);
+            CalculateConsumedWater(interval * TimeMultiplier);
+            AddTime(interval * TimeMultiplier);
+            CalculateEnergyConsumption(interval * TimeMultiplier);
+            CalculateHeating(interval * TimeMultiplier);
+            Boiler.CurrentTemperature = CalculateCalometricTemp();
+        }
         public void CalculateHeating(int time)
         {
             var timeSpan = new TimeSpan(0, 0, 0, 0, time);
@@ -44,7 +66,7 @@ namespace Boyler.Models
             {
                 Boiler.LastTemperature = Boiler.CurrentTemperature;
                 Boiler.CurrentTemperature = ((Boiler.HeatingPower*timeSpan.TotalHours)/(Boiler.VolumeLiters*WaterHeatCapacity)) + Boiler.LastTemperature;
-                Boiler.CurrentTemperature = CalculateCalometricTemp() + CalculateHeatLoss(time);
+                Boiler.CurrentTemperature = CalculateCalometricTemp() + CalculateHeatLoss(time) + CalculateHeatLoss(time);
             }
             else
             {
@@ -54,9 +76,9 @@ namespace Boyler.Models
         }
         public double CalculateCalometricTemp()
         {
-            var waterFlow = Boiler.WaterFlowPerSecond / 10 * TimeMultiplier;
-            double temp = (waterFlow*TuvWaterTemperature+(Boiler.VolumeLiters-waterFlow)*Boiler.CurrentTemperature) / (Boiler.VolumeLiters);
-            return temp;
+            double waterFlow = Boiler.WaterFlowPerSecond / 10 * TimeMultiplier;
+            double result = (waterFlow*TuvWaterTemperature+(Boiler.VolumeLiters-waterFlow)*Boiler.CurrentTemperature) / (Boiler.VolumeLiters);
+            return result;
         }
         public double CalculateHeatLoss(int time)
         {
@@ -79,7 +101,25 @@ namespace Boyler.Models
         }
         public void AutomaticRun()
         {
-
+            if(Boiler.CurrentTemperature >= 70)
+            {
+                Boiler.Heating = false;
+            }
+            else if(Boiler.CurrentTemperature <= 50)
+            {
+                Boiler.Heating = true;
+            }
+        }
+        public void CheckBoilerOverheat()
+        {
+            if(Boiler.CurrentTemperature >= 80)
+            {
+                PowerOff = true;
+            }
+            if(Boiler.CurrentTemperature <= 70)
+            {
+                PowerOff = false;
+            }
         }
     }
 }

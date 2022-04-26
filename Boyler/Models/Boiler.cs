@@ -23,6 +23,7 @@ namespace Boyler.Models
             VolumeLiters = 125 * Math.PI;
             WaterFlowPerSecond = 0;
             WaterFlowPerMinute = 0;
+            Heating = true;
         }
         public void SetWaterFlow(WaterAppliance appliance)
         {
